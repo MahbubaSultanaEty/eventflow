@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { Form } from '@heroui/react';
 import { Card, CardContent } from '@/components/ui/card';
+import { toast } from '@/components/ui/toast';
 
 import StepIndicator from './StepIndicator';
 import EventBasics from './EventBasics';
@@ -46,53 +47,59 @@ export default function RequirementForm() {
     setSubmitError('');
     setIsSubmitting(true);
 
-    try {
-      const result = await createRequirement(formData);
+try {
+  const result = await createRequirement(formData);
 
-      console.log('Requirement created:', result);
+  console.log('Requirement created:', result);
 
-      // Temporary success handling
-      alert('Requirement submitted successfully!');
+  toast.add({
+    title: 'Requirement submitted',
+    description: 'Your requirement was saved successfully.',
+  });
+} catch (error) {
+  console.error('Submit error:', error);
 
-    } catch (error) {
-      console.error('Submit error:', error);
-
-      setSubmitError(
-        error.message || 'Something went wrong. Please try again.'
-      );
-    } finally {
-      setIsSubmitting(false);
-    }
+  toast.add({
+    title: 'Submission failed',
+    description:
+      error.message || 'Failed to submit requirement.',
+    type: 'error',
+  });
+} finally {
+  setIsSubmitting(false);
+}
   };
 
-  const handleNext = (event) => {
-    const data = collectFormData(event);
+ const handleNext = (event) => {
+  event.preventDefault();
 
-    if (currentStep === 1) {
-      setFormData((prev) => ({
-        ...prev,
-        eventName: data.eventName || '',
-        eventType: data.eventType || '',
-        startDate: data.startDate || '',
-        endDate: data.endDate || '',
-        location: data.location || '',
-        venue: data.venue || '',
-        category: data.category || '',
-      }));
-    }
+  const data = collectFormData(event);
 
-    if (currentStep === 2 || currentStep === 3) {
-      setFormData((prev) => ({
-        ...prev,
-        details: {
-          ...prev.details,
-          ...data,
-        },
-      }));
-    }
+  if (currentStep === 1) {
+    setFormData((prev) => ({
+      ...prev,
+      eventName: data.eventName || '',
+      eventType: data.eventType || '',
+      startDate: data.startDate || '',
+      endDate: data.endDate || '',
+      location: data.location || '',
+      venue: data.venue || '',
+      category: data.category || '',
+    }));
+  }
 
-    setCurrentStep((prev) => Math.min(prev + 1, 4));
-  };
+  if (currentStep === 2 || currentStep === 3) {
+    setFormData((prev) => ({
+      ...prev,
+      details: {
+        ...prev.details,
+        ...data,
+      },
+    }));
+  }
+
+  setCurrentStep((prev) => Math.min(prev + 1, 4));
+};
 
   const handleBack = () => {
     setCurrentStep((prev) => Math.max(prev - 1, 1));
@@ -102,6 +109,8 @@ export default function RequirementForm() {
     setCurrentStep(step);
     setSubmitError('');
   };
+
+   
 
   return (
     <main className="min-h-screen bg-[#DBE2DC] px-4 py-10">
