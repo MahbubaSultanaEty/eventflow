@@ -11,6 +11,7 @@ import CategoryDetails from './CategoryDetails';
 import AdditionalDetails from './AdditionalDetails';
 import Review from './Review';
 import FormNavigation from './FormNavigation';
+import { useRouter } from 'next/navigation';
 
 import { createRequirement } from '@/lib/api';
 
@@ -18,6 +19,7 @@ export default function RequirementForm() {
   const [currentStep, setCurrentStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState('');
+  const router = useRouter();
 
   const [formData, setFormData] = useState({
     eventName: '',
@@ -56,6 +58,7 @@ try {
     title: 'Requirement submitted',
     description: 'Your requirement was saved successfully.',
   });
+  router.push('/');
 } catch (error) {
   console.error('Submit error:', error);
 
