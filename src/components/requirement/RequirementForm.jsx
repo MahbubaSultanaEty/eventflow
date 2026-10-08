@@ -43,35 +43,53 @@ export default function RequirementForm() {
     return data;
   };
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
 
-    setSubmitError('');
-    setIsSubmitting(true);
+const handleSubmit = async (event) => {
+  event.preventDefault();
 
-try {
-  const result = await createRequirement(formData);
+  setSubmitError('');
+  setIsSubmitting(true);
 
-  console.log('Requirement created:', result);
+  try {
+    const result = await createRequirement(formData);
 
-  toast.add({
-    title: 'Requirement submitted',
-    description: 'Your requirement was saved successfully.',
-  });
-  router.push('/');
-} catch (error) {
-  console.error('Submit error:', error);
+    console.log('Requirement created:', result);
 
-  toast.add({
-    title: 'Submission failed',
-    description:
-      error.message || 'Failed to submit requirement.',
-    type: 'error',
-  });
-} finally {
-  setIsSubmitting(false);
-}
-  };
+    // Reset form after successful submission
+    setFormData({
+      eventName: '',
+      eventType: '',
+      startDate: '',
+      endDate: '',
+      location: '',
+      venue: '',
+      category: '',
+      details: {},
+    });
+
+    setCurrentStep(1);
+
+    toast.add({
+      title: 'Requirement submitted',
+      description: 'Your requirement was saved successfully.',
+    });
+
+    router.push('/');
+  } catch (error) {
+    console.error('Submit error:', error);
+
+    toast.add({
+      title: 'Submission failed',
+      description:
+        error.message || 'Failed to submit requirement.',
+      type: 'error',
+    });
+  } finally {
+    setIsSubmitting(false);
+  }
+};
+
+
 
  const handleNext = (event) => {
   event.preventDefault();
