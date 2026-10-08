@@ -42,12 +42,12 @@ export default function Home() {
               Create a Requirement →
             </Link>
 
-            <a
-              href="#how-it-works"
+             <Link
+              href="/all-events"
               className="rounded-lg border border-[#335765]/30 px-6 py-3.5 font-medium transition hover:bg-[#B6D9E0]"
             >
-              How it works
-            </a>
+             All Events
+            </Link>
           </div>
         </div>
       </section>
